@@ -40,7 +40,7 @@ gRPC 是由 Google 開發的開源框架，它快速有效、奠基在 HTTP/2 �
 syntax = "proto3";  // 定義要使用的 protocol buffer 版本
 
 package calculator;  // for name space
-option go_package = "calculator/calculatorpb"; // generated code 的 full Go import path
+option go_package = "proto/calculator"; // generated code 的 full Go import path
 
 message CalculatorRequest {
   int64 a = 1;
@@ -149,7 +149,7 @@ func main() {
 ```go
 func doUnary(client calculatorPB.CalculatorServiceClient) {
  fmt.Println("Staring to do a Unary RPC")
- req := &calculatorpb.CalculatorRequest{
+ req := &calculatorPB.CalculatorRequest{
   A: 3,
   B: 10,
  }

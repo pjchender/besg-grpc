@@ -5,7 +5,7 @@ import (
 	"io"
 	"log"
 
-	calculatorPB "github.com/pjchender/besg-grpc/calculator/calculatorpb"
+	calculatorPB "github.com/pjchender/besg-grpc/proto/calculator"
 	"google.golang.org/grpc"
 )
 
