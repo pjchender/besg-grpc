@@ -12,6 +12,15 @@ message CalculatorResponse {
   int64 result = 1;
 }
 
+message GetFibonacciRequest {
+  int64 num = 1;
+}
+
+message GetFibonacciResponse {
+  int64 num = 1;
+}
+
 service CalculatorService {
   rpc Sum(CalculatorRequest) returns (CalculatorResponse) {};
+  rpc GetFibonacci(GetFibonacciRequest) returns(stream GetFibonacciResponse) {};
 }

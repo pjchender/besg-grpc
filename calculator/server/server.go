@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 
 	calculatorPB "github.com/pjchender/besg-grpc/calculator/calculatorpb"
 	"google.golang.org/grpc"
@@ -23,6 +24,35 @@ func (*Server) Sum(ctx context.Context, req *calculatorPB.CalculatorRequest) (*c
 	}
 
 	return res, nil
+}
+
+func (c *Server) GetFibonacci(req *calculatorPB.GetFibonacciRequest, stream calculatorPB.CalculatorService_GetFibonacciServer) error {
+	position := req.GetNum()
+	cache := make([]int64, position+1)
+	result := fibMemo(position, cache)
+
+	for _, num := range result {
+		stream.Send(&calculatorPB.GetFibonacciResponse{
+			Num: int64(num),
+		})
+		time.Sleep(1 * time.Second)
+	}
+
+	return nil
+}
+
+func fibMemo(position int64, cache []int64) []int64 {
+	if cache[position] != 0 {
+		return cache
+	} else {
+		if position <= 2 {
+			cache[position] = 1
+		} else {
+			cache[position] = fibMemo(position-1, cache)[position-1] + fibMemo(position-2, cache)[position-2]
+		}
+
+		return cache
+	}
 }
 
 func main() {

@@ -138,16 +138,16 @@ func main() {
 
  defer conn.Close()
 
- client := calculatorpb.NewCalculatorServiceClient(conn)
+ client := calculatorPB.NewCalculatorServiceClient(conn)
 
  doUnary(client)
 }
 ```
 
-#### STEP 2：使用 Protcol Buffer 中定義好的 Service
+#### STEP 2：使用 Protocol Buffers 中定義好的 Service
 
 ```go
-func doUnary(client calculatorpb.CalculatorServiceClient) {
+func doUnary(client calculatorPB.CalculatorServiceClient) {
  fmt.Println("Staring to do a Unary RPC")
  req := &calculatorpb.CalculatorRequest{
   A: 3,
@@ -219,7 +219,23 @@ func doUnary(client calculatorpb.CalculatorServiceClient) {
 
 ![gRPC](https://i.imgur.com/NWN1iCA.png)
 
-圖片來源：[gRPC Golang - Master Class: Build Modern API & Microservices](https://www.udemy.com/course/grpc-golang/) @ Udemy
+圖片來源：[gRPC Golang - Master Class: Build Modern API & MicroServices](https://www.udemy.com/course/grpc-golang/) @ Udemy
+
+```protobuf
+service GreetService {
+  // Unary
+  rpc Greet(GreetRequest) returns (GreetResponse) {};
+
+  // Streaming Server
+  rpc GreetManyTimes(GreetManyTimesRequest) returns (stream GreetManyTimesResponse) {};
+
+  // Streaming Client
+  rpc LongGreet(stream LongGreetRequest) returns (LongGreetResponse) {};
+
+  // Bi-directional Streaming
+  rpc GreetEveryone(stream GreetEveryoneRequest) returns (stream GreetEveryoneResponse) {};
+}
+```
 
 ## gRPC 的缺點
 
@@ -247,5 +263,5 @@ $ echo 'export PATH=$PATH:$GOPATH/bin' >> $HOME/.zshrc
 > - [Go Tutorial](https://grpc.io/docs/languages/go/quickstart/) @ [gRPC.io](https://grpc.io/docs/languages/go/quickstart/)
 > - [Introduction to gRPC](https://grpc.io/docs/what-is-grpc/introduction/) @ gRPC.io
 > - [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview) @ Google Developer
-> - [gRPC - Golang Master Class: Build Modern API & Microservices](https://www.udemy.com/course/grpc-golang/) @ Udemy
+> - [gRPC - Golang Master Class: Build Modern API & MicroServices](https://www.udemy.com/course/grpc-golang/) @ Udemy
 > - [比較 gRPC 服務與 HTTP API](https://docs.microsoft.com/zh-tw/aspnet/core/grpc/comparison?view=aspnetcore-5.0) @ Microsoft Docs
