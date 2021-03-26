@@ -2,7 +2,12 @@
 
 ![gRPC Getting Started](https://i.imgur.com/bznzVbH.png)
 
-> 分享人：[pjchender](https://www.facebook.com/pjchender)
+> - 分享人：[pjchender](https://www.facebook.com/pjchender)
+> - [gRPC 說明影片](https://youtu.be/MYmPY1E17ZM) @ BESG
+
+:::tip source code
+對應的程式碼可檢視 [besg-grpc](https://github.com/pjchender/besg-grpc/tree/main/proto/calculator) 的 repository。
+:::
 
 ## gRPC 是什麼：以 Golang 說明與實作
 
@@ -31,6 +36,8 @@ gRPC 是由 Google 開發的開源框架，它快速有效、奠基在 HTTP/2 �
 
 ### 實作將 Protocol Buffers 編譯成在 Golang 中可使用的檔案
 
+> 對應的程式碼可檢視 [besg-grpc](https://github.com/pjchender/besg-grpc/tree/main/proto/calculator) repository 中的 proto 資料夾。
+
 #### STEP 1：撰寫 Protocol Buffers 檔案
 
 - 使用 `message` 定義資料交換的格式
@@ -40,7 +47,7 @@ gRPC 是由 Google 開發的開源框架，它快速有效、奠基在 HTTP/2 �
 syntax = "proto3";  // 定義要使用的 protocol buffer 版本
 
 package calculator;  // for name space
-option go_package = "proto/calculator"; // generated code 的 full Go import path
+option go_package = "proto/calculator";  // generated code 的 full Go import path
 
 message CalculatorRequest {
   int64 a = 1;
@@ -76,11 +83,17 @@ $ go get -u google.golang.org/grpc
 
 #### STEP 3：編譯 Protocol Buffer 檔案
 
+進到放有 `.proto` 檔的資料夾後，在終端機輸入下述指令：
+
 ```bash
 protoc *.proto --go_out=plugins=grpc:. --go_opt=paths=source_relative
 ```
 
+在成功編譯好後，應該會看到同樣的資料夾位置出現 `*.pb.go` 的檔案，這就是編譯好後可以在 Golang 中使用 Protocol Buffer 和 gRPC 的檔案。
+
 ### 實作 gRPC Server
+
+> 對應的程式碼可檢視 [besg-grpc](https://github.com/pjchender/besg-grpc/tree/main/server) repository 中的 server 資料夾。
 
 #### STEP 1：建立 gRPC server
 
@@ -121,11 +134,27 @@ func (*Server) Sum(ctx context.Context, req *calculatorPB.CalculatorRequest) (*c
 }
 ```
 
-#### 使用 Bloom RPC 進行測試
+#### STEP 3：啟動 server
 
-[BloomRPC](https://github.com/uw-labs/bloomrpc) 方便用來模擬 Client 對 gRPC server 發送請求，功能就類似在 Restful 中使用的 Postman。
+在終端機中輸入：
+
+```bash
+go run server/server.go
+```
+
+即可啟動 gRPC server。
+
+#### 補充：使用 Bloom RPC 進行測試
+
+在只有 server 的情況下，可以使用[BloomRPC](https://github.com/uw-labs/bloomrpc) 這套工具來模擬 Client 對 gRPC server 發送請求，功能就類似在 Restful 中使用的 Postman。
+
+使用時只需要匯入 proto 檔後，即可看到對應可呼叫的方法和可帶入的參數，能這麼方便也是因為在 protocol buffer 中已經把傳輸的資料格式和能對應呼叫的方法都定好的緣故。
+
+![Bloom RPC](https://i.imgur.com/99Gfz4Z.png)
 
 ### 建立 gRPC Client
+
+> 完整程式碼可檢視 [besg-grpc](https://github.com/pjchender/besg-grpc/tree/main/client) repository 中的 client 資料夾。
 
 #### STEP 1：與 gRPC server 建立連線
 
@@ -162,6 +191,16 @@ func doUnary(client calculatorPB.CalculatorServiceClient) {
  log.Printf("Response from CalculatorService: %v", res.Result)
 }
 ```
+
+#### STEP 3：向 server 發送請求
+
+在終端機中輸入：
+
+```bash
+go run client/client.go
+```
+
+即可執行 `client.go` 並向剛剛起動好的 server 發送請求。
 
 ## gRPC 解決了什麼
 
